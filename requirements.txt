@@ -1,0 +1,6 @@
+# Consistent CAST training installation for pip-compatible tooling.
+#
+# pyproject.toml is the single source of truth.  Keep this file as a small
+# compatibility entry point for platforms that only accept requirements.txt;
+# do not replace it with `pip freeze` output.
+-e .[verl,sglang,sokoban,alfworld,webshop]

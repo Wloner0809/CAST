@@ -1,0 +1,70 @@
+# Rush Hour Evaluation Configuration
+# Rush Hour sliding-block puzzle environment
+
+eval:
+  #! Agent-specific arguments
+  # Engine type: "openai" (requires external server) or "sglang" (loads model directly)
+  engine: sglang
+  model:
+    # For sglang engine: this is the model path to load
+    # For openai engine: this is the model name to use in API requests
+    name: "Qwen/Qwen3-4B"
+    base_url: "http://localhost:30000/v1"
+    api_key: "None"
+  sampling:
+    temperature: 0.6
+    top_p: 0.95
+    top_k: -1
+    do_sample: true
+    entropy_mode: "none"
+  # sglang engine specific configuration (only used when engine: sglang)
+  sglang:
+    tp_size: 4  # Tensor parallelism size
+    dp_size: 2  # Data parallelism size
+    mem_fraction_static: 0.85  # GPU memory fraction for static allocation
+    trust_remote_code: true
+  execution:
+    n_parallel_agents: 64
+    max_steps: 100
+    max_response_length: 32768
+    max_prompt_length: 8192
+    max_workers: 64
+    n_rollouts_per_prompt: 4
+  data:
+    split: test
+    limit: null  # Set to null for full evaluation
+    data_file: id/test
+  output:
+    save_trajectories: true
+    save_dir: "./outputs/eval/rush_hour"
+
+  metrics:
+    logprobs_source: "none"
+    include_logprob_metrics: false
+    save_detailed_metrics: false
+    offline_logprobs:
+      model_name: "Qwen/Qwen3-4B"
+      batch_size: 16
+      dtype: "bfloat16"
+      gpu_memory_utilization: 0.9
+      parallel_strategy: "accelerate"
+      use_flash_attention: true
+      gradient_checkpointing: false
+      sequence_bucketing: true
+      bucket_size: 128
+      max_sequence_length: 20480
+      fsdp_cpu_offload: false
+      fsdp_sharding_strategy: "FULL_SHARD"
+      vllm_tensor_parallel_size: 1
+      vllm_gpu_memory_utilization: 0.9
+      deepspeed_zero_stage: 3
+      deepspeed_offload_device: "cpu"
+
+
+  #! Environment-specific arguments
+  env: rush_hour
+  env_args:
+    max_steps: 100
+  agent_args:
+    max_steps: 100
+    use_accumulate_history: true

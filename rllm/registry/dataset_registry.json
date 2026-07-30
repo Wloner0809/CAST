@@ -1,0 +1,26 @@
+{
+  "sokoban": {
+    "train": "data/datasets/sokoban/id/train.parquet",
+    "test": "data/datasets/sokoban/id/test.parquet",
+    "unseen_train": "data/datasets/sokoban/unseen/train.parquet",
+    "unseen_test": "data/datasets/sokoban/unseen/test.parquet"
+  },
+  "minesweeper": {
+    "train": "data/datasets/minesweeper/id/train.parquet",
+    "test": "data/datasets/minesweeper/id/test.parquet",
+    "unseen_train": "data/datasets/minesweeper/unseen/train.parquet",
+    "unseen_test": "data/datasets/minesweeper/unseen/test.parquet"
+  },
+  "rush_hour": {
+    "train": "data/datasets/rush_hour/id/train.parquet",
+    "test": "data/datasets/rush_hour/id/test.parquet",
+    "unseen_train": "data/datasets/rush_hour/unseen/train.parquet",
+    "unseen_test": "data/datasets/rush_hour/unseen/test.parquet"
+  },
+  "alfworld": {
+    "eval_id": "data/datasets/alfworld/eval_id.parquet"
+  },
+  "webshop": {
+    "test": "data/datasets/webshop/test.parquet"
+  }
+}

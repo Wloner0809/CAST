@@ -1,0 +1,313 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rllm"
+version = "0.2.1"
+description = "Reinforcement Learning for Language Agents"
+authors = [
+    {name = "rLLM Team"}
+]
+readme = "README.md"
+requires-python = ">=3.10,<3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+license = {file = "LICENSE"}
+dependencies = [
+    # Core ML/AI packages
+    "torch",
+    "torchvision",
+    "transformers>=4.55.0",
+    # Data processing
+    "datasets>=2.20.0",
+    "pandas",
+    "polars",
+    "pillow",
+    # Infrastructure
+    "ray",
+    # Math and science
+    "numpy",
+    "sympy",
+    "pylatexenc",
+    "antlr4-python3-runtime==4.9.3",
+    # Tools
+    "mcp",
+    # Integration with Eval Protocol
+    "eval-protocol",
+    # Utilities
+    "hydra-core",
+    "openai",
+    "fastapi",
+    "uvicorn",
+    "tqdm",
+    "PyYAML",
+    "pydantic",
+    "wrapt",
+    "asgiref>=3.7.0",
+    "wandb",
+]
+
+[project.optional-dependencies]
+
+dev = [
+    "pytest",
+    "pre-commit",
+    "ruff",
+    "mypy",
+]
+
+verl = [
+    # Compatibility-sensitive common training stack used by the published CAST
+    # runs. Select exactly one rollout extra: `sglang` (the script default) or
+    # `vllm`.
+    # CUDA wheels remain platform-specific and are selected by the installer/base
+    # image; these pins keep the Python package versions aligned across pip, uv,
+    # the launch scripts, and Docker.
+    "verl==0.6.1",
+    "torch==2.8.0",
+    "torchvision==0.23.0",
+    "torchaudio==2.8.0",
+    "torchao==0.9.0",
+    "transformers==4.57.1",
+    "flash-attn==2.8.3; sys_platform == 'linux' and platform_machine == 'x86_64'",
+    # Explicit versions copied from the training image recipe. Keep these
+    # visible here instead of relying on whichever transitive versions the
+    # resolver happens to choose.
+    "gymnasium==1.2.3",
+    "more-itertools==10.7.0",
+    "importlib-metadata==8.7.0",
+    "tqdm==4.67.1",
+    "zipp==3.23.0",
+    "six==1.17.0",
+    "click==8.2.2",
+    "litellm==1.74.15.post2",
+    "opentelemetry-sdk==1.39.1",
+    "requests==2.32.5",
+    "tiktoken==0.11.0",
+    "aiohttp==3.12.15",
+    "tokenizers>=0.21.1",
+    "numpy>=1.26,<2.0",
+    "omegaconf",
+    "ray[default]>=2.41.0",
+    "tensordict>=0.8.0,<=0.9.1,!=0.9.0",
+    "tensorboard",
+    "qwen-vl-utils",
+    # Unpinned training packages explicitly present in the source image recipe.
+    "decord",
+    "latex2sympy2-extended",
+    "liger-kernel",
+    "math-verify",
+    "mathruler",
+]
+
+sglang = [
+    "sglang==0.5.4",
+    "flashinfer-python==0.4.1",
+    "apache-tvm-ffi==0.1.0b15",
+    "outlines==0.1.11",
+    "outlines-core==0.1.26",
+    "torch-memory-saver==0.0.9",
+]
+
+vllm = [
+    "vllm>=0.10.2,<=0.11.0",
+    "outlines-core==0.2.11",
+]
+
+opentelemetry = [
+    "opentelemetry-sdk",
+]
+
+smolagents = [
+    "smolagents==1.20.0",
+]
+
+strands = [
+    "strands-agents",
+]
+
+swe = [
+    "docker",
+    "kubernetes",
+    "swebench",
+]
+
+sokoban = [
+    "gym==0.26.2",
+    "gym-notices==0.1.0",
+    "gym-sokoban==0.0.6",
+    "scipy",
+]
+
+alfworld = [
+    "textworld>=1.5.0",
+    "termcolor",
+    "fast-downward-textworld",
+]
+
+webshop = [
+    "gym==0.26.2",
+    "beautifulsoup4",
+    "cleantext==1.1.4",
+    "flask",
+    "rank-bm25==0.2.2",
+    "rich",
+    "selenium",
+    "thefuzz==0.19.0",
+    "pyserini==0.17.0",
+    "spacy",
+    "faiss-cpu==1.7.4",
+]
+
+code-tools = [
+    "e2b_code_interpreter",
+    "together>=1.4",
+]
+
+[tool.uv]
+conflicts = [
+    [
+        { extra = "sglang" },
+        { extra = "vllm" },
+    ],
+]
+override-dependencies = [
+    "rich>=13.9.4",
+]
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu126" }
+torchvision = { index = "pytorch-cu126" }
+torchaudio = { index = "pytorch-cu126" }
+flash-attn = [
+    { url = "https://github.com/Dao-AILab/flash-attention/releases/download/v2.8.3/flash_attn-2.8.3%2Bcu12torch2.8cxx11abiTRUE-cp310-cp310-linux_x86_64.whl", marker = "python_full_version < '3.11' and sys_platform == 'linux' and platform_machine == 'x86_64'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu126"
+url = "https://download.pytorch.org/whl/cu126"
+explicit = true
+
+[tool.uv.extra-build-dependencies]
+flash-attn = [
+    { requirement = "torch", match-runtime = true },
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+exclude = [
+	".git",
+	".venv",
+	"venv",
+	"__pycache__",
+	"*.egg-info",
+	"build",
+	"dist",
+	"migrations",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+	# Core
+	"E",      # pycodestyle errors
+	"W",      # pycodestyle warnings
+	"F",      # Pyflakes
+	"I",      # isort (import order)
+
+	# Code quality
+	"B",      # flake8-bugbear (common bugs)
+	"C4",     # flake8-comprehensions
+	"UP",     # pyupgrade (modern syntax)
+	"SIM",    # flake8-simplify
+	"RUF",    # Ruff-specific rules
+
+	# Best practices
+	"N",      # pep8-naming
+	"S",      # flake8-bandit (security)
+	"A",      # flake8-builtins (no shadowing)
+	"PT",     # flake8-pytest-style
+	"Q",      # flake8-quotes
+	"RET",    # flake8-return
+	"ARG",    # flake8-unused-arguments
+	"PTH",    # flake8-use-pathlib
+	"ERA",    # eradicate (commented-out code)
+	"PL",     # Pylint
+	"PERF",   # Perflint (performance)
+]
+
+ignore = [
+	"E501",    # line too long (handled by formatter)
+	"B008",    # function call as default argument
+	"S101",    # use of assert
+	"PLR0913", # too many arguments
+	"PLR2004", # magic value comparison
+]
+
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = [
+	"S101",    # allow assert
+	"PLR2004", # allow magic values
+	"ARG001",  # allow unused arguments (fixtures)
+]
+"__init__.py" = [
+	"F401",    # allow unused imports
+]
+"scripts/**/*.py" = [
+	"T20",     # allow print
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["rllm"]
+known-third-party = ["verl"]
+lines-after-imports = 2
+force-sort-within-sections = true
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.lint.pylint]
+max-args = 15
+max-branches = 20
+
+[tool.setuptools.packages.find]
+where   = ["."]
+include = ["rllm", "rllm.*"]
+
+[tool.setuptools.package-data]
+rllm = ["trainer/config/*.yaml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# importlib import mode lets same-named test modules coexist in different
+# directories (tests/envs/ and tests/solver/ both hold test_sokoban_solver.py)
+# without needing __init__.py files or unique basenames.
+addopts = "--import-mode=importlib"
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+check_untyped_defs = true
+follow_imports = "silent"
+exclude = [
+    "verl/.*",
+    "rllm/rewards/code_utils/.*",
+    "rllm/rewards/math_utils/.*",
+    "examples/.*",
+    "scripts/.*",
+    "tests/.*",
+]

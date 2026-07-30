@@ -1,0 +1,42 @@
+# ALFWorld Evaluation Configuration
+# Text-based household task environment
+
+eval:
+  #! Agent-specific arguments
+  # Engine type: "openai" (requires external server) or "sglang" (loads model directly)
+  engine: openai
+  model:
+    # For sglang engine: this is the model path to load
+    # For openai engine: this is the model name to use in API requests
+    # name: "Qwen/Qwen3-4B"
+    name: "closed/claude-opus-4.6"
+    base_url: ""  # set CLOSED_API_BASE to your OpenAI-compatible gateway
+    api_key: ""  # set CLOSED_API_KEY in the environment
+  sampling:
+    temperature: 1.0
+    top_p: 1.0
+  execution:
+    n_parallel_agents: 4
+    max_steps: 100
+    max_response_length: 32768
+    max_prompt_length: 8192
+    max_workers: 4
+    n_rollouts_per_prompt: 4
+    log_trajectory_turn_progress: true
+    trajectory_progress_log_interval: 1
+  data:
+    split: eval_id
+    limit: null  # Set to null for full evaluation
+    # data_file: medium/test
+  output:
+    save_trajectories: true
+    save_dir: "./outputs/eval/alfworld"
+
+  #! Environment-specific arguments
+  env: alfworld
+  env_args:
+    max_steps: 100
+  agent_args:
+    max_steps: 100
+    use_admissible_commands: true
+    use_accumulate_history: true

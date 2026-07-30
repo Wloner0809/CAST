@@ -1,0 +1,10 @@
+# Datasets are third-party or machine-generated: keep them out of the language
+# stats and collapse them in diffs.
+data/** linguist-vendored
+data/** linguist-generated
+
+# Vendored upstream environment packages.
+rllm/environments/webshop/webshop_pkg/** linguist-vendored
+rllm/environments/alfworld/alfworld_pkg/** linguist-vendored
+
+uv.lock linguist-generated

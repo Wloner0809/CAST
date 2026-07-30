@@ -1,0 +1,86 @@
+# ALFWorld Evaluation Configuration
+# Text-based household task environment
+
+eval:
+  #! Agent-specific arguments
+  # Engine type: "openai" (requires external server) or "sglang" (loads model directly)
+  engine: sglang
+  model:
+    # For sglang engine: this is the model path to load
+    # For openai engine: this is the model name to use in API requests
+    name: "Qwen/Qwen3-4B"
+    # name: "closed/gpt-4.1"
+    base_url: "http://localhost:30000/v1"
+    api_key: "None"
+  sampling:
+    temperature: 0.6
+    top_p: 0.95
+    top_k: -1
+    do_sample: true
+    #* Entropy computation mode:
+    # - "none": No entropy computation (fastest)
+    # - "gpu": Use sglang's GPU entropy computation (RECOMMENDED, fast & exact)
+    # - "topk": Use top-K logprobs to approximate entropy on CPU (fallback)
+    # - "full": Use full vocabulary logprobs on CPU (very slow)
+    entropy_mode: "none"
+    #* K value for topk mode (100 gives ~99% accuracy)
+    # top_k_for_entropy: 100
+  # sglang engine specific configuration (only used when engine: sglang)
+  sglang:
+    tp_size: 4  # Tensor parallelism size
+    dp_size: 2  # Data parallelism size
+    # tp_size: 2  # Tensor parallelism size
+    # dp_size: 4  # Data parallelism size
+    mem_fraction_static: 0.85  # GPU memory fraction for static allocation
+    trust_remote_code: true
+  execution:
+    n_parallel_agents: 64
+    max_steps: 100
+    max_response_length: 16384
+    max_prompt_length: 2048
+    max_workers: 64
+    n_rollouts_per_prompt: 4
+  data:
+    split: eval_id
+    limit: null  # Set to null for full evaluation
+  output:
+    save_trajectories: true
+    save_dir: "./outputs/eval/alfworld"
+
+  metrics:
+    # logprobs_source: "offline"
+    logprobs_source: "none"
+    include_logprob_metrics: false
+    save_detailed_metrics: false
+    offline_logprobs:
+      model_name: "Qwen/Qwen3-4B"
+      batch_size: 16
+      dtype: "bfloat16"
+      gpu_memory_utilization: 0.9
+      #* Parallel strategy: naive | accelerate | data_parallel | fsdp | vllm | deepspeed
+      parallel_strategy: "accelerate"  # runs offline logprob scoring in a single process
+      # Advanced options
+      use_flash_attention: true
+      gradient_checkpointing: false
+      sequence_bucketing: true
+      bucket_size: 128
+      max_sequence_length: 40960
+      # FSDP options (only used when parallel_strategy: fsdp)
+      fsdp_cpu_offload: false
+      fsdp_sharding_strategy: "FULL_SHARD"
+      # vLLM options (only used when parallel_strategy: vllm)
+      vllm_tensor_parallel_size: 1
+      vllm_gpu_memory_utilization: 0.9
+      # DeepSpeed options (only used when parallel_strategy: deepspeed)
+      deepspeed_zero_stage: 3
+      deepspeed_offload_device: "cpu"
+
+
+  #! Environment-specific arguments
+  env: alfworld
+  env_args:
+    max_steps: 100
+  agent_args:
+    max_steps: 100
+    use_admissible_commands: true
+    use_accumulate_history: true
